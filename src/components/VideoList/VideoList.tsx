@@ -1,11 +1,12 @@
 import React from "react";
 import VideoItem from "../VideoItem/VideoItem";
+import styles from "./VideoList.module.css";
 
 type Video = {
   etag: string;
   id: string;
   kind: string;
-  snippet: object;
+  snippet: any;
 };
 
 type VideoListProps = {
@@ -13,7 +14,7 @@ type VideoListProps = {
 };
 
 const VideoList = ({ videos }: VideoListProps) => (
-  <ul>
+  <ul className={styles.videos}>
     {videos.map((video) => (
       <VideoItem key={video.id} video={video} />
     ))}
