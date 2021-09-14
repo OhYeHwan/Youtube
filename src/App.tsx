@@ -3,52 +3,26 @@ import SearchHeader from "./components/SearchHeader/SearchHeader";
 import VideoList from "./components/VideoList/VideoList";
 import styles from "./app.module.css";
 
-type requestOptions = {
-  method: string;
-  redirect: RequestRedirect;
-};
-
-type item = {
-  id: {
-    kind: string;
-    videoId: string;
+type youtubeProps = {
+  youtube: {
+    mostPopular: () => Promise<any>;
+    search: (query: string) => Promise<any>;
   };
 };
 
-const App = () => {
+const App = ({ youtube }: youtubeProps) => {
   const [videos, setVideos] = useState([]);
   const search = (query: string) => {
-    const requestOptions: requestOptions = {
-      method: "GET",
-      redirect: "follow",
-    };
-
-    fetch(
-      `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResult=25&q=${query}&type=video&key=AIzaSyDSwQBgMmzhWv_yMecMsgui6GaaYvFZSJE`,
-      requestOptions
-    )
-      .then((response) => response.json())
-      .then((result) =>
-        result.items.map((item: item) => ({ ...item, id: item.id.videoId }))
-      )
-      .then((items) => setVideos(items))
-      .catch((error) => console.log("error", error));
+    youtube
+      .search(query) //
+      .then((videos) => setVideos(videos));
   };
 
   useEffect(() => {
-    const requestOptions: requestOptions = {
-      method: "GET",
-      redirect: "follow",
-    };
-
-    fetch(
-      "https://www.googleapis.com/youtube/v3/videos?part=snippet&chart=mostPopular&maxResults=25&key=AIzaSyDSwQBgMmzhWv_yMecMsgui6GaaYvFZSJE",
-      requestOptions
-    )
-      .then((response) => response.json())
-      .then((result) => setVideos(result.items))
-      .catch((error) => console.log("error", error));
-  }, []);
+    youtube
+      .mostPopular() //
+      .then((videos) => setVideos(videos));
+  }, [youtube]);
   // 컴포넌트가 업데이트 될 때마다 통신하는 것은 좋지 않기 때문에
   // [] 빈 배열을 넣어준다. -> 마운트가 되었을때만 호출
   // [] 안에 값을 넣으면 넣은 값만 바뀔때마다 호출
