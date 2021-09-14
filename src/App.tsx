@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import SearchHeader from "./components/SearchHeader/SearchHeader";
 import VideoList from "./components/VideoList/VideoList";
 import styles from "./app.module.css";
+import VideoDetail from "./components/VideoDetail/VideoDetail";
 
 type youtubeProps = {
   youtube: {
@@ -10,8 +11,22 @@ type youtubeProps = {
   };
 };
 
+type Video = {
+  etag: string;
+  id: string;
+  kind: string;
+  snippet: any;
+  previousState: null;
+};
+
 const App = ({ youtube }: youtubeProps) => {
   const [videos, setVideos] = useState([]);
+  const [selectedVideo, setSelectedVideo] = useState<Video | null>(null);
+
+  const selectVideo = (video: Video) => {
+    setSelectedVideo(video);
+  };
+
   const search = (query: string) => {
     youtube
       .search(query) //
@@ -31,7 +46,20 @@ const App = ({ youtube }: youtubeProps) => {
   return (
     <div className={styles.app}>
       <SearchHeader onSearch={search} />
-      <VideoList videos={videos} />
+      <section className={styles.content}>
+        {selectedVideo && (
+          <div className={styles.detail}>
+            <VideoDetail video={selectedVideo} />
+          </div>
+        )}
+        <div className={styles.list}>
+          <VideoList
+            videos={videos}
+            onVideoClick={selectVideo}
+            display={selectedVideo ? "list" : "grid"}
+          />
+        </div>
+      </section>
     </div>
   );
 };
