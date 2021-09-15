@@ -30,7 +30,10 @@ const App = ({ youtube }: youtubeProps) => {
   const search = (query: string) => {
     youtube
       .search(query) //
-      .then((videos) => setVideos(videos));
+      .then((videos) => {
+        setVideos(videos);
+        setSelectedVideo(null);
+      });
   };
 
   useEffect(() => {
@@ -46,6 +49,7 @@ const App = ({ youtube }: youtubeProps) => {
   return (
     <div className={styles.app}>
       <SearchHeader onSearch={search} />
+      {/*content에서 flex-direction을 미디어쿼리를 이용하여 창이 작아지면 동영상 밑으로 리스트가 내려가게 하기 */}
       <section className={styles.content}>
         {selectedVideo && (
           <div className={styles.detail}>
