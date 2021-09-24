@@ -1,7 +1,4 @@
-type requestOptions = {
-    method: string;
-    redirect: RequestRedirect;
-}
+import axios from 'axios';
 
 type item = {
   id: {
@@ -12,32 +9,36 @@ type item = {
 
 
 export class Youtube {
-    key: string;
-    getRequestOptions: requestOptions;
-    constructor(key : any) {
-        this.key = key;
-        this.getRequestOptions = {
-            method: 'GET',
-            redirect: 'follow',
-        };
+    
+    youtube: any;
+    
+    constructor(key: any) {
+        this.youtube = axios.create({
+            baseURL: 'https://www.googleapis.com/youtube/v3',
+            params: { key: key },
+        });
     }
 
     async mostPopular() {
-        const response = await fetch(
-            `https://www.googleapis.com/youtube/v3/videos?part=snippet&chart=mostPopular&maxResults=25&key=${this.key}`,
-            this.getRequestOptions
-        );
-        const result_1 = await response.json();
-        return (result_1.items);
+        const response = await this.youtube.get('videos', {
+            params: {
+                part: 'snippet',
+                chart: 'mostPopular',
+                maxResults: 25,
+            }
+        });
+        return response.data.items;
     }
 
     async search(query:string) {
-        const response = await fetch(
-            `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResult=25&q=${query}&type=video&key=${this.key}`,
-            this.getRequestOptions
-        );
-        const result_1 = await response.json();
-        return result_1.items.map((item: item) => ({ ...item, id: item.id.videoId }));
-
+        const response = await this.youtube.get('search', {
+            params: {
+                part: 'snippet',
+                maxResults: 25,
+                type: 'video',
+                q: query,
+            }
+        });
+        return response.data.items.map((item: item) => ({ ...item, id: item.id.videoId }));
     }
 }
