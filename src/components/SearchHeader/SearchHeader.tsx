@@ -1,11 +1,11 @@
-import React, { useRef } from "react";
+import React, { memo, useRef } from "react";
 import styles from "./SearchHeader.module.css";
 
 type searchHeader = {
   onSearch: (query: string) => void;
 };
 
-const SearchHeader = ({ onSearch }: searchHeader) => {
+const SearchHeader = memo(({ onSearch }: searchHeader) => {
   const inputRef = useRef<HTMLInputElement>(null);
 
   const handleSearch = () => {
@@ -26,6 +26,7 @@ const SearchHeader = ({ onSearch }: searchHeader) => {
     }
   };
 
+  console.log("header!!");
   return (
     <header className={styles.header}>
       <div className={styles.logo}>
@@ -48,6 +49,6 @@ const SearchHeader = ({ onSearch }: searchHeader) => {
       </button>
     </header>
   );
-};
+});
 
 export default SearchHeader;
