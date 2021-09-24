@@ -4,8 +4,14 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import "./index.css";
 import { Youtube } from "./service/youtube";
+import axios from "axios";
 
-const youtube = new Youtube(process.env.REACT_APP_YOUTUBE_API_KEY);
+const httpClient = axios.create({
+  baseURL: "https://www.googleapis.com/youtube/v3",
+  params: { key: process.env.REACT_APP_YOUTUBE_API_KEY },
+});
+
+const youtube = new Youtube(httpClient);
 
 ReactDOM.render(
   <React.StrictMode>

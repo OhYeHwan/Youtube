@@ -1,5 +1,3 @@
-import axios from 'axios';
-
 type item = {
   id: {
     kind: string;
@@ -9,14 +7,10 @@ type item = {
 
 
 export class Youtube {
-    
+
     youtube: any;
-    
-    constructor(key: any) {
-        this.youtube = axios.create({
-            baseURL: 'https://www.googleapis.com/youtube/v3',
-            params: { key: key },
-        });
+    constructor(httpClient:any) {
+        this.youtube = httpClient;
     }
 
     async mostPopular() {
